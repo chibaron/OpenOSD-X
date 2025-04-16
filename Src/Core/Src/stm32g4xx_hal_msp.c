@@ -23,6 +23,8 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+extern DMA_HandleTypeDef hdma_dac3_ch1;
+
 extern DMA_HandleTypeDef hdma_tim1_up;
 
 /* Private typedef -----------------------------------------------------------*/
@@ -322,6 +324,25 @@ void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
   /* USER CODE END DAC3_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_DAC3_CLK_ENABLE();
+
+    /* DAC3 DMA Init */
+    /* DAC3_CH1 Init */
+    hdma_dac3_ch1.Instance = DMA2_Channel1;
+    hdma_dac3_ch1.Init.Request = DMA_REQUEST_DAC3_CHANNEL1;
+    hdma_dac3_ch1.Init.Direction = DMA_MEMORY_TO_PERIPH;
+    hdma_dac3_ch1.Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma_dac3_ch1.Init.MemInc = DMA_MINC_ENABLE;
+    hdma_dac3_ch1.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+    hdma_dac3_ch1.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+    hdma_dac3_ch1.Init.Mode = DMA_CIRCULAR;
+    hdma_dac3_ch1.Init.Priority = DMA_PRIORITY_LOW;
+    if (HAL_DMA_Init(&hdma_dac3_ch1) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(hdac,DMA_Handle1,hdma_dac3_ch1);
+
   /* USER CODE BEGIN DAC3_MspInit 1 */
 
   /* USER CODE END DAC3_MspInit 1 */
@@ -362,6 +383,9 @@ void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
   /* USER CODE END DAC3_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_DAC3_CLK_DISABLE();
+
+    /* DAC3 DMA DeInit */
+    HAL_DMA_DeInit(hdac->DMA_Handle1);
   /* USER CODE BEGIN DAC3_MspDeInit 1 */
 
   /* USER CODE END DAC3_MspDeInit 1 */
@@ -528,7 +552,7 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
     /* TIM1_UP Init */
     hdma_tim1_up.Instance = DMA1_Channel1;
     hdma_tim1_up.Init.Request = DMA_REQUEST_TIM1_UP;
-    hdma_tim1_up.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma_tim1_up.Init.Direction = DMA_MEMORY_TO_PERIPH;
     hdma_tim1_up.Init.PeriphInc = DMA_PINC_DISABLE;
     hdma_tim1_up.Init.MemInc = DMA_MINC_ENABLE;
     hdma_tim1_up.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
@@ -582,6 +606,17 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
   /* USER CODE BEGIN TIM3_MspInit 1 */
 
   /* USER CODE END TIM3_MspInit 1 */
+  }
+  else if(htim_base->Instance==TIM4)
+  {
+  /* USER CODE BEGIN TIM4_MspInit 0 */
+
+  /* USER CODE END TIM4_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM4_CLK_ENABLE();
+  /* USER CODE BEGIN TIM4_MspInit 1 */
+
+  /* USER CODE END TIM4_MspInit 1 */
   }
   else if(htim_base->Instance==TIM16)
   {
@@ -694,6 +729,17 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
   /* USER CODE BEGIN TIM3_MspDeInit 1 */
 
   /* USER CODE END TIM3_MspDeInit 1 */
+  }
+  else if(htim_base->Instance==TIM4)
+  {
+  /* USER CODE BEGIN TIM4_MspDeInit 0 */
+
+  /* USER CODE END TIM4_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM4_CLK_DISABLE();
+  /* USER CODE BEGIN TIM4_MspDeInit 1 */
+
+  /* USER CODE END TIM4_MspDeInit 1 */
   }
   else if(htim_base->Instance==TIM16)
   {
